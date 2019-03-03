@@ -14,21 +14,67 @@ class AddItem1 extends StatefulWidget {
 class _AddItem1State extends State<AddItem1> {
     String title;
     String description;
-    File image;
+    File _image;
   //File galleryimage;
-
-    cameraPicker() async {
-    print('Picker is called');
-    File img = await ImagePicker.pickImage(
-      source: ImageSource.camera
+    _showOptionsDialog () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            height: 180,
+            child: Column(
+              children: <Widget>[
+                Container(color: Colors.grey.shade200,
+                  child: ListTile(title: Text("Pick image from any one of them"),),
+                ),
+                ListTile(
+                  leading: Icon(Icons.photo_album),
+                  title: Text("Pick from Gallery"),
+                  onTap: (){
+                     _getImage(ImageSource.gallery);
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.camera_alt),
+                  title: Text("Take a picture"),
+                  onTap: (){
+                    _getImage(ImageSource.camera);
+                    Navigator.pop(context);
+                  } 
+                ),
+              ],
+            ),
+            
+          ),backgroundColor: Colors.green[200]
+        );
+      }
     );
-    if (img != null){
-    print(img.path);
-    setState(() {
-     image=img;  
-          } );
-        }
-      } 
+  }
+
+ Future _getImage(ImageSource source) async {
+    var image = await ImagePicker.pickImage(source:source);
+    if(image != null) {
+      setState(() {
+        _image = image;
+      });
+    }
+  }
+
+
+    // cameraPicker() async {
+    // print('Picker is called');
+    // File img = await ImagePicker.pickImage(
+    //   source: ImageSource.camera
+    // );
+    // if (img != null){
+    // print(img.path);
+    // setState(() {
+    //  _image=img;  
+    //       } );
+    //     }
+    //   } 
   //we pick from From Gallery 
     //   galleryPicker() async {
     //   galleryimage = await ImagePicker.pickImage(
@@ -90,16 +136,16 @@ class _AddItem1State extends State<AddItem1> {
           child: 
           RaisedButton.icon(
             icon: Icon(Icons.camera),
-            label: Text("Add Image From Camera"),
+            label: Text("Add Image"),
             color: Colors.blue,
-            onPressed:()=>cameraPicker(),
+            onPressed:()=>_showOptionsDialog(),
               )  
                 ,),
           SizedBox(height: 20,),
          
           SizedBox(
             
-          child: image == null ? Container() : Image.file(image,height: 200,),),
+          child: _image == null ? Container() : Image.file(_image,height: 200,),),
           SizedBox(height: 20,),
           // SizedBox(height: 50,
           // width: 20.0,
@@ -122,7 +168,8 @@ class _AddItem1State extends State<AddItem1> {
             label: Text("Save Memo"),
             color: Colors.blue,
             onPressed: (){
-               widget.add(title,description,image);
+              
+               widget.add(title,description,_image);
                Navigator.pop(context);
             },
           ),

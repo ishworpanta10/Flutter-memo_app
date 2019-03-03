@@ -9,6 +9,7 @@ class ItemDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green[200],
       appBar: AppBar(
         title: Text(item["title"]),
       ),
@@ -22,7 +23,7 @@ class ItemDetails extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: FileImage(item["img"],),
+                  image: FileImage(File(item["img"]),)
                 )
               ),
             ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'additem.dart';
 import 'itemdetails.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,25 +12,69 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List items = [] ;
+
+  void initState(){
+    super.initState();
+    getItems();
+      }
+
+      getItems()async{
+        final sp=await SharedPreferences.getInstance();
+        var itemString = sp.getString('items');
+        if (itemString == null){
+          print("No Item found");
+          setState(() {
+           items = [
+    
+           ] ;
+          });
+          await saveItems(items);
+        }else
+        {
+          setState(() {
+           items =json.decode(itemString); 
+          });
+        }
+
+      }
+      saveItems(items) async {
+        final sp =await SharedPreferences.getInstance();
+        await sp.setString('items', json.encode(items));
+        print("Saved Shared preference");
+        print(items);
+      }
+
+    
+
    addItem1(String title , String description, File image ){
     setState(() {
      items.add({
        "title":title,
        "description":description,
-       "img":image,
+       "img":image.path,
      }); 
+       saveItems(items);
     });    
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.menu),onPressed: (){
+          
+        },),
         title: Center(
           child: Text("Item list"),
             ),
+            actions: <Widget>[IconButton(icon: Icon(Icons.search),onPressed: (){
+
+            },)],
         backgroundColor:Colors.pinkAccent,
       ),
-      body: ListView.builder(
+      body: 
+      
+      ListView.builder(
+        physics: BouncingScrollPhysics(),
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
         var item = items[index];
@@ -39,9 +85,13 @@ class _HomePageState extends State<HomePage> {
           isThreeLine: true,
            title: Text(item["title"]),
            leading: CircleAvatar(
-             backgroundImage:FileImage(item["img"],),
+             backgroundImage:FileImage(File(item["img"]),),
              radius: 34,
                ),
+               trailing: IconButton(icon: Icon(Icons.delete_forever),onPressed: (){
+          
+               },),
+               
              subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -50,6 +100,7 @@ class _HomePageState extends State<HomePage> {
             //  Text(item["picture"])
                ],
             ),
+            
           );
         },
       ),
@@ -60,35 +111,8 @@ class _HomePageState extends State<HomePage> {
            tooltip: "Add Item",
         child: Icon(Icons.add),
       ),
+      backgroundColor: Colors.green[200],
     );
   }
 }
 
-
-// final List items = [
-//     {
-//       "title": "Book",
-//       "description": "This is my Databsae book .",
-//       "picture": "assets/img1.jpg",       
-//     },
-//       {
-//       "title": "Pen",
-//       "description": "This is my pen .",
-//       "picture": "assets/img2.jpg",
-//     },
-//       {
-//       "title": "Sim card",
-//       "description": "This is my sim card .",
-//       "picture": "assets/img3.jpg",   
-//     },
-//       {
-//       "title": "mouse",
-//       "description": "This is my mouse.",
-//       "picture": "assets/img3.jpg",
-//     },
-//     {
-//       "title": "Wifi Adapter",
-//       "description": "This is my Wifi Dangol.",
-//       "picture": "assets/img1.jpg",
-//     },
-//   ];
