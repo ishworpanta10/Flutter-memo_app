@@ -11,7 +11,9 @@ class ItemDetails extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.green[200],
       appBar: AppBar(
-        title: Text(item["title"]),
+      title: Center(
+          child: Text(item["title"]),
+            ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
