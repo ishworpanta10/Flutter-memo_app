@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'ui/pages/homepage.dart';
 import 'dart:async';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,7 +34,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   startTime() async {
-    var duration = Duration(seconds: 2);
+    var duration = Duration(seconds: 4);
     return Timer(duration, navigationPage);
   }
 
@@ -54,12 +55,34 @@ class _SplashScreenState extends State<SplashScreen> {
         backgroundColor: Colors.greenAccent,
         body: Container(
           height: double.infinity,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-                    back,
-                  ),
-                  fit: BoxFit.cover)),
+
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 30.0,
+                ),
+                Image.asset(back),
+                SizedBox(
+                  height: 30,
+                ),
+                SpinKitHourGlass(
+                  color: Colors.white,
+                  size: 100.0,
+                ),
+              ],
+            ),
+          ),
+          // decoration: BoxDecoration(
+
+          //     image: DecorationImage(
+
+          //         image: AssetImage(
+          //           back,
+          //         ),
+
+          //         fit: BoxFit.cover)),
         ));
   }
 }
